@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>帮助 - 一二与布布</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      font-family: -apple-system, 'Microsoft YaHei', sans-serif;
+      background: linear-gradient(160deg, #fff5f7 0%, #fce4ec 50%, #fff0f5 100%);
+      color: #333;
+      user-select: none;
+      height: 100%;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .title-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 18px;
+      background: linear-gradient(135deg, #f06292, #ec407a);
+      box-shadow: 0 2px 12px rgba(240,98,146,0.3);
+      flex-shrink: 0;
+    }
+    .title-bar .left {
+      display: flex; align-items: center; gap: 8px;
+    }
+    .title-bar .icon { font-size: 20px; }
+    .title-bar span { font-size: 15px; font-weight: 700; color: #fff; }
+    .title-close {
+      width: 30px; height: 30px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%; cursor: pointer; font-size: 16px; color: rgba(255,255,255,0.8);
+      transition: all 0.2s;
+    }
+    .title-close:hover { background: rgba(255,255,255,0.25); color: #fff; }
+    .content {
+      padding: 14px 18px;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .content::-webkit-scrollbar { width: 4px; }
+    .content::-webkit-scrollbar-thumb { background: #f3c0d0; border-radius: 4px; }
+    .card {
+      background: rgba(255,255,255,0.92);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+      border: 1px solid rgba(240,98,146,0.1);
+    }
+    .card-label {
+      font-size: 13px; font-weight: 600; color: #c2185b;
+      margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+    }
+    .card-label .emoji { font-size: 16px; }
+    .card p {
+      font-size: 13px; color: #666; line-height: 1.8; margin-bottom: 8px;
+    }
+    .card p:last-child { margin-bottom: 0; }
+    .card ul {
+      list-style: none; padding: 0;
+    }
+    .card ul li {
+      font-size: 13px; color: #555; line-height: 1.8;
+      padding: 4px 0 4px 20px; position: relative;
+    }
+    .card ul li::before {
+      content: ''; position: absolute; left: 4px; top: 12px;
+      width: 6px; height: 6px; background: #f48fb1; border-radius: 50%;
+    }
+    .highlight {
+      color: #c2185b; font-weight: 600;
+    }
+    .shortcut-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 5px 0; font-size: 13px;
+    }
+    .shortcut-key {
+      background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+      border: 1px solid #f3c0d0; border-radius: 6px;
+      padding: 2px 8px; font-size: 12px; font-weight: 600; color: #c2185b;
+      min-width: 40px; text-align: center;
+    }
+    .shortcut-desc { color: #666; }
+    .version-info {
+      text-align: center; padding: 8px 0 4px;
+      font-size: 11px; color: #aaa;
+    }
+    .version-info a {
+      color: #ec407a; text-decoration: none;
+    }
+    .version-info a:hover { text-decoration: underline; }
+    .sub-label {
+      font-size: 12px; font-weight: 600; color: #888;
+      margin: 10px 0 6px; padding-left: 2px;
+    }
+    .footer {
+      padding: 10px 18px; text-align: center;
+      font-size: 11px; color: #ccc;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="title-bar">
+    <div class="left">
+      <span class="icon">❓</span>
+      <span>一二与布布 - 帮助</span>
+    </div>
+    <div class="title-close" id="closeBtn">✕</div>
+  </div>
+  <div class="content">
+    <div class="card">
+      <div class="card-label"><span class="emoji">💖</span> 关于一二与布布</div>
+      <p>一二与布布是一款可爱的桌面宠物软件，内置物理引擎和行为模拟系统，布布和一二会在你的桌面上自由活动、互相追逐、陪伴你工作和学习。</p>
+      <p><span class="highlight">一二</span>：活泼好动、爱撒娇、喜欢捉迷藏和爬墙，偶尔会自己偷吃零食。</p>
+      <p><span class="highlight">布布</span>：安静沉稳、爱编码、喜欢看书和喝咖啡，经常在屏幕角落安静工作。</p>
+    </div>
+
+    <div class="card">
+      <div class="card-label"><span class="emoji">🎮</span> 交互方式</div>
+      <ul>
+        <li><span class="highlight">右键点击</span>一二布布或空白区域：呼出操作菜单</li>
+        <li><span class="highlight">左键拖拽</span>：抓住一二布布移动（有惯性释放，松手会掉落）</li>
+        <li><span class="highlight">喂食</span>：提供多种食物，提升饱腹度和心情</li>
+        <li><span class="highlight">玩耍</span>：使用玩具互动，提升心情和亲密度</li>
+        <li><span class="highlight">爱抚</span>：摸摸增加亲密度</li>
+        <li>一二布布之间会自动互相追逐、打招呼、早安问候等</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-label"><span class="emoji">📊</span> 查看状态</div>
+      <p>通过 <span class="highlight">托盘菜单 → 查看状态</span> 或右键菜单打开，实时显示一二布布四项核心属性：</p>
+      <ul>
+        <li><span class="highlight">🍖 饱腹度</span>：随时间下降，为零时一二布布会饥饿讨食，需要及时喂食</li>
+        <li><span class="highlight">💕 心情值</span>：互动（喂食/玩耍/爱抚）可提升，心情低落时一二布布会难过</li>
+        <li><span class="highlight">⚡ 精力值</span>：活动时消耗，低精力时一二布布会打哈欠、想睡觉</li>
+        <li><span class="highlight">💗 亲密度</span>：通过爱抚、玩耍等互动逐步累积</li>
+        <li>同时显示 <span class="highlight">天气信息</span>（模拟天气系统，影响一二布布行为）</li>
+        <li>显示一二布布的<span class="highlight">当前状态</span>（发呆/走路/睡觉等）</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-label"><span class="emoji">📖</span> 一二布布日记</div>
+      <p>通过 <span class="highlight">托盘菜单 → 一二布布日记</span> 或右键菜单打开，自动记录你与一二布布的互动点滴：</p>
+      <ul>
+        <li>每条记录包含 <span class="highlight">图标 + 事件描述 + 时间戳</span></li>
+        <li>自动记录的事件类型：起床问候、吃饭、玩耍、爱抚、情侣互动、拖拽、掉落、睡眠等</li>
+        <li>最近 50 条记录按时间倒序显示</li>
+        <li>数据以 JSON 文件本地持久化存储，不会丢失</li>
+        <li>日记会根据一二布布的个性生成不同的文字描述（一二和布布的风格不同）</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-label"><span class="emoji">🎞️</span> GIF 状态管理面板</div>
+      <p>通过 <span class="highlight">托盘菜单 → GIF 状态</span> 打开，用于管理所有 GIF 素材库：</p>
+      <div class="sub-label">📋 功能说明</div>
+      <ul>
+        <li>面板包含三个标签页：<span class="highlight">一二</span>、<span class="highlight">布布</span>、<span class="highlight">待分配</span></li>
+        <li><span class="highlight">上传 GIF</span>：点击按钮选择本地 .gif 文件上传到当前标签页</li>
+        <li>上传时自动根据当前模式判断归属：仅一二模式上传给一二，仅布布上传给布布，双人模式上传到待分配</li>
+        <li><span class="highlight">触发概率</span>：每个 GIF 可设置 1%~20% 的触发概率</li>
+        <li><span class="highlight">拖拽上传</span>：直接将 GIF 文件拖拽到一二布布身上可快速分配</li>
+        <li><span class="highlight">清空</span>：支持一键清空当前标签页所有 GIF（需三次确认）</li>
+        <li>每个 GIF 卡片显示预览、归属、上传时间和触发概率</li>
+        <li>删除 GIF 时会自动清除所有相关绑定</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-label"><span class="emoji">🎭</span> GIF 绑定管理</div>
+      <p>通过 <span class="highlight">托盘菜单 → GIF 绑定管理</span> 打开，将 GIF 素材绑定到具体行为状态：</p>
+      <div class="sub-label">📋 功能说明</div>
+      <ul>
+        <li>面板分两个标签：<span class="highlight">🤍 一二</span> 和 <span class="highlight">🤎 布布</span>，各自独立管理</li>
+        <li><span class="highlight">GIF 库</span>：显示当前一二布布的所有可用 GIF，可在此上传新 GIF 或删除</li>
+        <li><span class="highlight">状态绑定区</span>：列出该一二布布的所有状态（已绑定在上、未绑定在下）</li>
+        <li>点击状态卡片展开详情，可添加/删除绑定、调整概率</li>
+      </ul>
+      <div class="sub-label">📋 操作流程</div>
+      <ul>
+        <li>① 上传 GIF → ② 展开目标状态卡片 → ③ 点击「添加 GIF」选择素材 → ④ 点击「下一步」调整概率 → ⑤ 点击「确认绑定」</li>
+        <li>支持为同一状态绑定 <span class="highlight">多个 GIF</span>，触发时按概率随机选择</li>
+        <li>多个 GIF 的概率自动归一化，可手动调节每个 GIF 的权重</li>
+        <li><span class="highlight">解绑</span>：点击绑定项的删除按钮，二次确认后解绑，该状态自动恢复默认动画</li>
+        <li><span class="highlight">立即生效</span>：绑定/解绑后，如果一二布布正在该状态，动画立即替换</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-label"><span class="emoji">⚙️</span> 其他功能</div>
+      <ul>
+        <li><span class="highlight">设置</span>：切换窗口模式（全屏/手动划分）、开机自启动、鼠标穿透模式</li>
+        <li><span class="highlight">专注模式</span>：一二布布暂时安静不干扰，专注工作/学习</li>
+        <li><span class="highlight">切换模式</span>：可选择「一二与布布」「仅一二」「仅布布」三种模式</li>
+        <li>所有功能入口在<span class="highlight">系统托盘</span>（任务栏小图标）右键菜单中</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="shortcut-row">
+        <span class="shortcut-key">右键</span>
+        <span class="shortcut-desc">呼出操作菜单</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label"><span class="emoji">💡</span> 小贴士</div>
+      <ul>
+        <li>一二布布会按真实作息自动吃饭、睡觉、起床问候（早 6~9 点）</li>
+        <li>早餐/午餐/晚餐有固定时间段，错过会饿肚子</li>
+        <li>长时间不喂食，一二布布会变得饥饿和难过，头顶出现 🍖 图标</li>
+        <li>拖拽到高处一二布布会害怕，头顶出现恐惧表情</li>
+        <li>一二布布靠近时会触发情侣互动（追逐、夸夸、早安问候等）</li>
+        <li>一二布布心情好时会自己跳舞、看电视、打滚</li>
+      </ul>
+    </div>
+
+    <div class="version-info">
+      一二与布布 v1.0 · MIT License<br>
+      开发者：<a href="https://github.com/Haoqi7" target="_blank">Haoqi7</a>
+    </div>
+  </div>
+  <div class="footer">感谢使用 ❤️</div>
+
+  <script>
+    document.getElementById('closeBtn').addEventListener('click', () => {
+      window.close();
+    });
+  </script>
+</body>
+</html>

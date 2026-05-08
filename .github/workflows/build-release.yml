@@ -1,0 +1,117 @@
+name: Build and Release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            build_cmd: npm run build:win
+            artifact_name: win-installer
+            artifact_glob: dist/*.exe
+          - os: macos-latest
+            build_cmd: npm run build:mac
+            artifact_name: mac-installer
+            artifact_glob: dist/*.dmg
+      fail-fast: false
+
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+
+    env:
+      ELECTRON_CACHE: ${{ github.workspace }}/.electron-cache
+      electron_config_cache: ${{ github.workspace }}/.electron-cache
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download and extract assets
+        run: |
+          echo "Downloading assets..."
+          curl -fsSL -o assets.zip "https://github.com/Haoqi7/yier-bubu/releases/download/v1.0/assets.zip"
+          echo "Extracting to project root..."
+          unzip -o assets.zip
+          rm -f assets.zip
+          echo "Assets ready. Structure:"
+          ls assets/ | head -5
+        shell: bash
+
+      - name: Check required files
+        run: |
+          if [ ! -f "assets/icon.png" ]; then
+            if [ -f "assets/yier/idle/frame_001.png" ]; then
+              cp assets/yier/idle/frame_001.png assets/icon.png
+              echo "Generated icon.png from yier idle frame."
+            else
+              echo "Missing assets/icon.png and no fallback found."
+              exit 1
+            fi
+          fi
+          echo "All required files present."
+        shell: bash
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Cache Electron
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/.electron-cache
+          key: electron-${{ matrix.os }}-28
+
+      - name: Install dependencies
+        run: |
+          rm -f package-lock.json
+          npm install
+        shell: bash
+
+      # macOS 跳过签名，并使用 -- 正确传递参数
+      - name: Build (macOS)
+        if: matrix.os == 'macos-latest'
+        run: CSC_IDENTITY_AUTO_DISCOVERY=false ${{ matrix.build_cmd }} -- --publish never
+        shell: bash
+
+      # Windows 正常构建，同样使用 --
+      - name: Build (Windows)
+        if: matrix.os == 'windows-latest'
+        run: ${{ matrix.build_cmd }} -- --publish never
+        shell: bash
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: ${{ matrix.artifact_glob }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Generate timestamp
+        id: time
+        run: echo "TIMESTAMP=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "Release ${{ steps.time.outputs.TIMESTAMP }}"
+          tag_name: "v${{ steps.time.outputs.TIMESTAMP }}"
+          files: |
+            artifacts/win-installer/*.exe
+            artifacts/mac-installer/*.dmg
+          fail_on_unmatched_files: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
