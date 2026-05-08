@@ -20,6 +20,11 @@ jobs:
             artifact_name: mac-installer
             artifact_glob: dist/*.dmg
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+
+    env:
+      ELECTRON_CACHE: ${{ github.workspace }}/.electron-cache
+      electron_config_cache: ${{ github.workspace }}/.electron-cache
 
     steps:
       - uses: actions/checkout@v4
@@ -41,6 +46,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
+
+      - name: Cache Electron
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/.electron-cache
+          key: electron-${{ matrix.os }}-28
 
       - name: Install dependencies
         run: |
@@ -50,6 +62,7 @@ jobs:
 
       - name: Build
         run: ${{ matrix.build_cmd }}
+        shell: bash
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
