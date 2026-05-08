@@ -19,6 +19,8 @@ jobs:
             build_cmd: npm run build:mac
             artifact_name: mac-installer
             artifact_glob: dist/*.dmg
+      fail-fast: false
+
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
 
@@ -31,16 +33,28 @@ jobs:
 
       - name: Download and extract assets
         run: |
-          curl -L -o assets.zip "https://github.com/Haoqi7/yier-bubu/releases/download/v1.0/assets.zip"
-          mkdir -p _assets_tmp
-          unzip -o assets.zip -d _assets_tmp
-          if [ -d "_assets_tmp/assets" ]; then
-            mv _assets_tmp/assets ./assets
+          echo "Downloading assets..."
+          curl -fsSL -o assets.zip "https://github.com/Haoqi7/yier-bubu/releases/download/v1.0/assets.zip"
+          echo "Extracting..."
+          unzip -o assets.zip -d _tmp
+          # 处理可能嵌套的 assets 文件夹
+          if [ -d "_tmp/assets" ]; then
+            mv _tmp/assets ./assets
           else
             mkdir -p assets
-            cp -r _assets_tmp/* assets/
+            mv _tmp/* assets/ 2>/dev/null || true
           fi
-          rm -rf _assets_tmp assets.zip
+          rm -rf _tmp assets.zip
+          echo "Assets downloaded."
+        shell: bash
+
+      - name: Check required files
+        run: |
+          if [ ! -f "assets/icon.png" ]; then
+            echo "❌ Missing assets/icon.png"
+            exit 1
+          fi
+          echo "✅ All required files present."
         shell: bash
 
       - uses: actions/setup-node@v4
@@ -59,7 +73,14 @@ jobs:
           npm install
         shell: bash
 
-      - name: Build
+      # macOS 跳过代码签名（本地测试用）
+      - name: Build (macOS)
+        if: matrix.os == 'macos-latest'
+        run: CSC_IDENTITY_AUTO_DISCOVERY=false ${{ matrix.build_cmd }} --publish never
+        shell: bash
+
+      - name: Build (Windows)
+        if: matrix.os == 'windows-latest'
         run: ${{ matrix.build_cmd }} --publish never
         shell: bash
 
@@ -89,7 +110,8 @@ jobs:
           name: "Release ${{ steps.time.outputs.TIMESTAMP }}"
           tag_name: "v${{ steps.time.outputs.TIMESTAMP }}"
           files: |
-            artifacts/win-installer/*
-            artifacts/mac-installer/*
+            artifacts/win-installer/*.exe
+            artifacts/mac-installer/*.dmg
+          fail_on_unmatched_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
