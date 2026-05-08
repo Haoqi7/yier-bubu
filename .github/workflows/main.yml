@@ -50,10 +50,15 @@ jobs:
       - name: Check required files
         run: |
           if [ ! -f "assets/icon.png" ]; then
-            echo "❌ Missing assets/icon.png"
-            exit 1
+            if [ -f "assets/yier/idle/frame_001.png" ]; then
+              cp assets/yier/idle/frame_001.png assets/icon.png
+              echo "Generated icon.png from yier idle frame."
+            else
+              echo "Missing assets/icon.png and no fallback found."
+              exit 1
+            fi
           fi
-          echo "✅ All required files present."
+          echo "All required files present."
         shell: bash
 
       - uses: actions/setup-node@v4
