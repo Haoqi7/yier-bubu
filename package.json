@@ -1,7 +1,7 @@
 {
-  "name": "yi-er-yu-bu-bu",
+  "name": "yier-bubu",
   "version": "1.0.0",
-  "description": "一二与布布 - 桌面宠物软件",
+  "description": "一二布布 - 桌面宠物软件",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -21,12 +21,13 @@
       "output": "dist"
     },
     "win": {
-      "target": "nsis",
+      "target": ["nsis"],
       "icon": "assets/icon.png"
     },
     "mac": {
-      "target": "dmg",
-      "icon": "assets/icon.png"
+      "target": ["dmg"],
+      "icon": "assets/icon.png",
+      "identity": null
     },
     "files": [
       "main.js",
