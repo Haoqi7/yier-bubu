@@ -1,0 +1,86 @@
+name: Build and Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: '版本号 (例如: v1.1.0)'
+        required: true
+        type: string
+        default: 'v1.0.0'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            build_cmd: npm run build:win
+            artifact_name: win-installer
+            artifact_glob: dist/*.exe
+          - os: macos-latest
+            build_cmd: npm run build:mac
+            artifact_name: mac-installer
+            artifact_glob: dist/*.dmg
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download and extract assets
+        run: |
+          curl -L -o assets.zip "https://github.com/Haoqi7/yier-bubu/releases/download/v1.0/assets.zip"
+          mkdir -p _assets_tmp
+          unzip -o assets.zip -d _assets_tmp
+          if [ -d "_assets_tmp/assets" ]; then
+            mv _assets_tmp/assets ./assets
+          else
+            mkdir -p assets
+            cp -r _assets_tmp/* assets/
+          fi
+          rm -rf _assets_tmp assets.zip
+        shell: bash
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: ${{ matrix.build_cmd }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: ${{ matrix.artifact_glob }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Generate timestamp
+        id: time
+        run: echo "TIMESTAMP=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "Release ${{ github.event.inputs.version }}"
+          tag_name: "${{ github.event.inputs.version }}"
+          files: |
+            artifacts/win-installer/*
+            artifacts/mac-installer/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
