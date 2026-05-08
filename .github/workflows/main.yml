@@ -2,12 +2,6 @@ name: Build and Release
 
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: '版本号 (例如: v1.1.0)'
-        required: true
-        type: string
-        default: 'v1.0.0'
 
 permissions:
   contents: write
@@ -49,7 +43,10 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          rm -f package-lock.json
+          npm install
+        shell: bash
 
       - name: Build
         run: ${{ matrix.build_cmd }}
@@ -77,8 +74,8 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          name: "Release ${{ github.event.inputs.version }}"
-          tag_name: "${{ github.event.inputs.version }}"
+          name: "Release ${{ steps.time.outputs.TIMESTAMP }}"
+          tag_name: "v${{ steps.time.outputs.TIMESTAMP }}"
           files: |
             artifacts/win-installer/*
             artifacts/mac-installer/*
