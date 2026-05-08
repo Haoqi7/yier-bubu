@@ -276,6 +276,7 @@ function rebuildTrayMenu() {
       click: () => {
         isFocusMode = !isFocusMode;
         mainWindow?.webContents.send('toggle-focus', isFocusMode);
+        setPassthrough(isFocusMode);
         rebuildTrayMenu();
       }
     },
@@ -322,7 +323,7 @@ ipcMain.on('set-ignore-mouse-events', (_, ignore) => {
 
 let isPassthrough = false;
 
-ipcMain.on('set-passthrough', (_, enabled) => {
+function setPassthrough(enabled) {
   isPassthrough = enabled;
   if (mainWindow) {
     mainWindow.setIgnoreMouseEvents(enabled, { forward: true });
@@ -331,6 +332,10 @@ ipcMain.on('set-passthrough', (_, enabled) => {
   const s = loadSettings();
   s.passthrough = enabled;
   saveSettings(s);
+}
+
+ipcMain.on('set-passthrough', (_, enabled) => {
+  setPassthrough(enabled);
 });
 
 ipcMain.on('flash-tray', () => {});
