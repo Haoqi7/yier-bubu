@@ -37,7 +37,6 @@ jobs:
           curl -fsSL -o assets.zip "https://github.com/Haoqi7/yier-bubu/releases/download/v1.0/assets.zip"
           echo "Extracting..."
           unzip -o assets.zip -d _tmp
-          # 处理可能嵌套的 assets 文件夹
           if [ -d "_tmp/assets" ]; then
             mv _tmp/assets ./assets
           else
@@ -73,15 +72,16 @@ jobs:
           npm install
         shell: bash
 
-      # macOS 跳过代码签名（本地测试用）
+      # macOS 跳过签名，并使用 -- 正确传递参数
       - name: Build (macOS)
         if: matrix.os == 'macos-latest'
-        run: CSC_IDENTITY_AUTO_DISCOVERY=false ${{ matrix.build_cmd }} --publish never
+        run: CSC_IDENTITY_AUTO_DISCOVERY=false ${{ matrix.build_cmd }} -- --publish never
         shell: bash
 
+      # Windows 正常构建，同样使用 --
       - name: Build (Windows)
         if: matrix.os == 'windows-latest'
-        run: ${{ matrix.build_cmd }} --publish never
+        run: ${{ matrix.build_cmd }} -- --publish never
         shell: bash
 
       - name: Upload artifact
