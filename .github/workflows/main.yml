@@ -60,7 +60,7 @@ jobs:
         shell: bash
 
       - name: Build
-        run: ${{ matrix.build_cmd }}
+        run: ${{ matrix.build_cmd }} --publish never
         shell: bash
 
       - name: Upload artifact
