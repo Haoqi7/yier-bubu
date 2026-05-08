@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>一二与布布</title>
+  <link rel="stylesheet" href="renderer/styles.css">
+  <link rel="stylesheet" href="renderer/gif-manager.css">
+  <link rel="stylesheet" href="renderer/gif-state-panel.css">
+</head>
+<body>
+  <div id="pet-world">
+    <div id="yier-container" class="pet-container">
+      <div id="yier-sprite" class="pet-sprite">
+        <img id="yier-img" class="pet-img" draggable="false">
+        <div id="yier-eye-layer" class="eye-layer">
+          <div class="eye left-eye"></div>
+          <div class="eye right-eye"></div>
+        </div>
+        <div id="yier-overlay" class="state-overlay"></div>
+      </div>
+      <div id="yier-emotion" class="emotion-layer"></div>
+      <div id="yier-drag-expr" class="drag-expression"></div>
+      <div id="yier-high-fear" class="high-fear"></div>
+      <div id="yier-status-indicator" class="status-indicator"></div>
+      <div id="yier-bubble" class="speech-bubble">
+        <span class="bubble-content"></span>
+        <div class="bubble-tail"></div>
+      </div>
+      <div id="yier-particles" class="particle-container"></div>
+    </div>
+
+    <div id="bubu-container" class="pet-container">
+      <div id="bubu-sprite" class="pet-sprite">
+        <img id="bubu-img" class="pet-img" draggable="false">
+        <div id="bubu-eye-layer" class="eye-layer">
+          <div class="eye left-eye"></div>
+          <div class="eye right-eye"></div>
+        </div>
+        <div id="bubu-overlay" class="state-overlay"></div>
+      </div>
+      <div id="bubu-emotion" class="emotion-layer"></div>
+      <div id="bubu-drag-expr" class="drag-expression"></div>
+      <div id="bubu-high-fear" class="high-fear"></div>
+      <div id="bubu-status-indicator" class="status-indicator"></div>
+      <div id="bubu-bubble" class="speech-bubble">
+        <span class="bubble-content"></span>
+        <div class="bubble-tail"></div>
+      </div>
+      <div id="bubu-particles" class="particle-container"></div>
+    </div>
+
+    <div id="couple-overlay"></div>
+    <div id="global-particles"></div>
+  </div>
+
+  <div id="status-panel" class="panel hidden">
+    <div class="panel-header-bar">
+      <span class="panel-header">📊 宠物状态</span>
+      <div class="panel-close" onclick="this.closest('.panel').classList.add('hidden');if(window.electronAPI&&window.electronAPI.restoreWindowAfterPanel)window.electronAPI.restoreWindowAfterPanel()">✕</div>
+    </div>
+    <div id="status-content" class="panel-body"></div>
+  </div>
+
+  <div id="diary-panel" class="panel hidden">
+    <div class="panel-header-bar">
+      <span class="panel-header">📖 宠物日记</span>
+      <div class="panel-close" onclick="this.closest('.panel').classList.add('hidden');if(window.electronAPI&&window.electronAPI.restoreWindowAfterPanel)window.electronAPI.restoreWindowAfterPanel()">✕</div>
+    </div>
+    <div id="diary-content" class="panel-body"></div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="renderer/gif-manager.js"></script>
+  <script src="renderer/gif-state-panel.js"></script>
+  <script src="renderer/app.js"></script>
+</body>
+</html>

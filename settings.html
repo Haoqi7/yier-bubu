@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>设置 - 一二与布布</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      font-family: -apple-system, 'Microsoft YaHei', sans-serif;
+      background: linear-gradient(160deg, #fff5f7 0%, #fce4ec 50%, #fff0f5 100%);
+      color: #333;
+      user-select: none;
+      height: 100%;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .title-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 18px;
+      background: linear-gradient(135deg, #f06292, #ec407a);
+      box-shadow: 0 2px 12px rgba(240,98,146,0.3);
+      flex-shrink: 0;
+    }
+    .title-bar .left {
+      display: flex; align-items: center; gap: 8px;
+    }
+    .title-bar .icon { font-size: 20px; }
+    .title-bar span { font-size: 15px; font-weight: 700; color: #fff; }
+    .title-close {
+      width: 30px; height: 30px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%; cursor: pointer; font-size: 16px; color: rgba(255,255,255,0.8);
+      transition: all 0.2s;
+    }
+    .title-close:hover { background: rgba(255,255,255,0.25); color: #fff; }
+    .content {
+      padding: 14px 18px;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .content::-webkit-scrollbar { width: 4px; }
+    .content::-webkit-scrollbar-thumb { background: #f3c0d0; border-radius: 4px; }
+    .card {
+      background: rgba(255,255,255,0.92);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+      border: 1px solid rgba(240,98,146,0.1);
+    }
+    .card-label {
+      font-size: 13px; font-weight: 600; color: #c2185b;
+      margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+    }
+    .card-label .emoji { font-size: 16px; }
+    .mode-row { display: flex; gap: 10px; }
+    .mode-btn {
+      flex: 1; padding: 12px 10px;
+      border: 2px solid #f3e0e6; border-radius: 14px;
+      background: #fff; color: #888; font-size: 13px; font-weight: 600;
+      cursor: pointer; text-align: center; transition: all 0.25s;
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+    }
+    .mode-btn .btn-icon { font-size: 24px; }
+    .mode-btn:hover { border-color: #f48fb1; color: #c2185b; transform: translateY(-1px); }
+    .mode-btn.active {
+      border-color: #f06292; font-weight: 700;
+      background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+      color: #c2185b; box-shadow: 0 2px 8px rgba(240,98,146,0.2);
+    }
+    .draw-section {
+      margin-top: 10px; display: flex; flex-direction: column; align-items: center; gap: 8px;
+    }
+    .draw-section.hidden { display: none; }
+    .draw-hint {
+      font-size: 12px; color: #999; text-align: center;
+    }
+    .draw-btn {
+      width: 100%; padding: 12px;
+      border: 2px dashed #f48fb1; border-radius: 12px;
+      background: rgba(252,228,236,0.5); color: #c2185b;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      transition: all 0.25s;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .draw-btn:hover {
+      border-style: solid; background: rgba(252,228,236,0.8);
+      transform: translateY(-1px); box-shadow: 0 2px 8px rgba(240,98,146,0.2);
+    }
+    .draw-result {
+      font-size: 12px; color: #666; text-align: center;
+      padding: 6px 10px; background: #fff0f5; border-radius: 8px;
+      display: none;
+    }
+    .draw-result.show { display: block; }
+    .screen-hint {
+      font-size: 11px; color: #bbb; text-align: center; margin-top: 4px;
+    }
+    .toggle-row {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .toggle-info {
+      display: flex; flex-direction: column; gap: 1px;
+    }
+    .toggle-label { font-size: 13px; font-weight: 600; color: #555; }
+    .toggle-desc { font-size: 11px; color: #aaa; }
+    .toggle {
+      position: relative; display: inline-block; width: 48px; height: 26px;
+      cursor: pointer;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: #ddd; border-radius: 26px; transition: 0.3s;
+    }
+    .slider::before {
+      content: ''; position: absolute;
+      width: 20px; height: 20px; left: 3px; bottom: 3px;
+      background: #fff; border-radius: 50%; transition: 0.3s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+    .toggle input:checked + .slider { background: #f06292; }
+    .toggle input:checked + .slider::before { transform: translateX(22px); }
+    .footer {
+      padding: 10px 18px; text-align: center;
+      font-size: 11px; color: #ccc;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="title-bar">
+    <div class="left">
+      <span class="icon">⚙️</span>
+      <span>一二与布布 - 设置</span>
+    </div>
+    <div class="title-close" id="closeBtn">✕</div>
+  </div>
+  <div class="content">
+    <div class="card">
+      <div class="card-label"><span class="emoji">📐</span> 窗口模式</div>
+      <div class="mode-row">
+        <button class="mode-btn" id="btnFullscreen">
+          <span class="btn-icon">🖥️</span>
+          <span>全屏</span>
+        </button>
+        <button class="mode-btn" id="btnManual">
+          <span class="btn-icon">✏️</span>
+          <span>手动划分</span>
+        </button>
+      </div>
+      <div class="draw-section hidden" id="drawSection">
+        <div class="draw-hint">点击下方按钮，鼠标拖拽画出窗口区域</div>
+        <button class="draw-btn" id="startDrawBtn">🖱️ 拖拽画框</button>
+        <div class="draw-result" id="drawResult"></div>
+      </div>
+      <div class="screen-hint" id="screenHint"></div>
+    </div>
+    <div class="card">
+      <div class="card-label"><span class="emoji">🚀</span> 启动设置</div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <span class="toggle-label">开机自启动</span>
+          <span class="toggle-desc">系统启动时自动运行</span>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="autoLaunch">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label"><span class="emoji">👆</span> 穿透模式</div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <span class="toggle-label">开启穿透</span>
+          <span class="toggle-desc">开启后无法与桌宠交互，鼠标点击穿透到桌面</span>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="passthrough">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label"><span class="emoji">🎭</span> GIF 绑定管理</div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:6px;">
+        <div style="font-size:12px;color:#999;text-align:center;line-height:1.6;">
+          为每个状态绑定自定义 GIF 动画<br>
+          支持多 GIF 轮换与概率分配
+        </div>
+        <button class="gsp-open-btn" id="gspOpenBtn" style="
+          width:100%;padding:12px;
+          border:2px dashed #66bb6a;border-radius:12px;
+          background:rgba(232,245,233,0.6);color:#2e7d32;
+          font-size:14px;font-weight:600;cursor:pointer;
+          transition:all 0.25s;
+          font-family:inherit;
+        " onmouseover="this.style.background='rgba(232,245,233,1)';this.style.borderStyle='solid';this.style.transform='translateY(-1px)'"
+          onmouseout="this.style.background='rgba(232,245,233,0.6)';this.style.borderStyle='dashed';this.style.transform='none'"
+        >🎭 打开状态管理面板</button>
+      </div>
+    </div>
+  </div>
+  <div class="footer">一二与布布 v1.0 · 设置自动保存</div>
+
+  <script>
+    const api = window.electronAPI;
+    const btnFullscreen = document.getElementById('btnFullscreen');
+    const btnManual = document.getElementById('btnManual');
+    const drawSection = document.getElementById('drawSection');
+    const drawResult = document.getElementById('drawResult');
+    const screenHint = document.getElementById('screenHint');
+
+    function setActive(btn) {
+      btnFullscreen.classList.remove('active');
+      btnManual.classList.remove('active');
+      btn.classList.add('active');
+    }
+
+    async function loadSettings() {
+      if (!api) return;
+      try {
+        const s = await api.getSettings();
+        screenHint.textContent = `屏幕可用区域：${s.screenWidth} × ${s.screenHeight}`;
+
+        if (s.windowSize === 'custom') {
+          setActive(btnManual);
+          drawSection.classList.remove('hidden');
+          if (s.customWidth) {
+            drawResult.textContent = `X: ${s.customX || 0}  Y: ${s.customY || 0}  ${s.customWidth} × ${s.customHeight}`;
+            drawResult.classList.add('show');
+          }
+        } else {
+          setActive(btnFullscreen);
+          drawSection.classList.add('hidden');
+        }
+
+        document.getElementById('autoLaunch').checked = !!s.autoLaunch;
+        document.getElementById('passthrough').checked = !!s.passthrough;
+      } catch (e) {}
+    }
+
+    btnFullscreen.addEventListener('click', async () => {
+      setActive(btnFullscreen);
+      drawSection.classList.add('hidden');
+      drawResult.classList.remove('show');
+      if (api) await api.setWindowSize('fullscreen');
+    });
+
+    btnManual.addEventListener('click', () => {
+      setActive(btnManual);
+      drawSection.classList.remove('hidden');
+    });
+
+    document.getElementById('startDrawBtn').addEventListener('click', () => {
+      if (api) api.startDraw();
+    });
+
+    if (api && api.onDrawResult) {
+      api.onDrawResult((x, y, w, h) => {
+        drawResult.textContent = `X: ${x}  Y: ${y}  ${w} × ${h}`;
+        drawResult.classList.add('show');
+        drawSection.classList.remove('hidden');
+      });
+    }
+
+    document.getElementById('autoLaunch').addEventListener('change', (e) => {
+      if (api) api.setAutoLaunch(e.target.checked);
+    });
+
+    document.getElementById('passthrough').addEventListener('change', (e) => {
+      if (api) api.setPassthrough(e.target.checked);
+    });
+
+    document.getElementById('closeBtn').addEventListener('click', () => {
+      if (api) api.closeSettings();
+    });
+
+    document.getElementById('gspOpenBtn').addEventListener('click', () => {
+      if (api) api.openGifStatePanel();
+    });
+
+    loadSettings();
+  </script>
+</body>
+</html>
