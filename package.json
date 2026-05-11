@@ -6,7 +6,8 @@
   "scripts": {
     "start": "electron .",
     "build:win": "electron-builder --win",
-    "build:mac": "electron-builder --mac"
+    "build:mac": "electron-builder --mac",
+    "prebuild:win": "powershell -ExecutionPolicy Bypass -File download-vc-redist.ps1"
   },
   "author": "一二与布布工作室",
   "license": "MIT",
@@ -20,9 +21,34 @@
     "directories": {
       "output": "dist"
     },
+    "extraResources": [
+      {
+        "from": "build/vc_redist.x64.exe",
+        "to": "vc_redist.x64.exe"
+      },
+      {
+        "from": "build/vc_redist.x86.exe",
+        "to": "vc_redist.x86.exe"
+      }
+    ],
     "win": {
-      "target": ["portable"],
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
       "icon": "assets/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "allowElevation": true,
+      "perMachine": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "一二与布布",
+      "include": "build/installer.nsh"
     },
     "mac": {
       "target": ["dmg"],

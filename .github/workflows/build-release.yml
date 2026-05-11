@@ -75,6 +75,17 @@ jobs:
           npm install
         shell: bash
 
+      - name: Download VC++ Runtime (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          mkdir -p build
+          echo "Downloading VC++ Redistributable x64..."
+          curl -fsSL -o build/vc_redist.x64.exe "https://aka.ms/vs/17/release/vc_redist.x64.exe"
+          echo "Downloading VC++ Redistributable x86..."
+          curl -fsSL -o build/vc_redist.x86.exe "https://aka.ms/vs/17/release/vc_redist.x86.exe"
+          ls -lh build/
+        shell: bash
+
       # macOS 跳过签名，并使用 -- 正确传递参数
       - name: Build (macOS)
         if: matrix.os == 'macos-latest'
